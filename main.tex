@@ -1,0 +1,66 @@
+\documentclass[12pt]{iopart}
+%\newcommand{\gguide}{{\it Preparing graphics for IOP Publishing journals}}
+%Uncomment next line if AMS fonts required
+%\usepackage{iopams}
+\usepackage{listings}
+\usepackage{minted}
+\usepackage{subfig}
+\usepackage{hyperref}
+\usepackage{graphicx}
+% \usepackage{subcaption}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usepackage[labelfont=bf]{caption}
+
+%\newminted{cpp}{gobble=2, numbersep=3pt, escapeinside=||, xleftmargin=5mm, framesep=2mm, frame=leftline, baselinestretch=1, fontsize=\scriptsize, linenos=true}
+%\newmintinline{cpp}{}
+
+%\makeatletter
+%\AtBeginEnvironment{minted}{\dontdofcolorbox}
+%\def\dontdofcolorbox{\renewcommand\fcolorbox[4][]{##4}}
+%\makeatother
+
+\begin{document}
+
+\title{Speeding HEP Analysis with ROOT Bulk I/O}
+
+\author{Brian Paul Bockelman  [2], Zhe Zhang [1],  Oksana Shadura [1]}
+\address{[1] University of Nebraska-Lincoln, USA [2] Morgridge Institute for Research, USA}
+\ead{zhan0915@huskers.unl.edu, bbockelman@morgridge.org,  oksana.shadura@cern.ch}
+\vspace{10pt}
+
+\begin{abstract}
+Distinct HEP workflows have distinct I/O needs; while ROOT I/O excels at serializing complex C++ objects common to reconstruction, analysis workflows typically have simpler objects and can sustain higher event rates. To meet these workflows, we have developed a “bulk I/O” interface, allowing multiple events’ data to be returned per library call. This reduces ROOT-related overheads and increases event rates -- orders-of-magnitude improvements are shown in microbenchmarks.
+
+Unfortunately, this bulk interface is difficult to use as it requires users to identify when it is applicable and they still “think” in terms of events, not arrays of data. We have integrated the bulk I/O interface into the new RDataFrame analysis framework inside ROOT. As RDataFrame’s interface can provide improved type information, the framework itself can determine what data is readable via the bulk IO and automatically switch between interfaces. We demonstrate how this can improve event rates when reading analysis data formats, such as CMS’s NanoAOD.
+\end{abstract}
+
+\input{latex/introduction.tex}
+\input{latex/motivation.tex}
+\input{latex/interface.tex}
+\input{latex/evaluation.tex}
+\input{latex/conclusions.tex}
+
+\section*{Acknowledgments}
+
+This work was supported by the National Science Foundation under
+Grant ACI-1450323. This research was done using resources provided
+by the Holland Computing Center of the University of Nebraska.
+
+\section*{References}
+
+\begin{thebibliography}{10}
+
+\bibitem{root}
+R. Brun, F. Rademakers, \textit{ROOT - An Object Oriented Data Analysis Framework}, Nucl. Inst. \& Meth. in Phys. Res. A  \textbf{389} (Proceedings AIHENP'96 Workshop,1997).
+
+\bibitem{rdataframe}
+Enrico Guiraud, Axel Naumann, and Danilo Piparo. RDataFrame: functional chains for ROOT data analyses. Jan. 2017. doi: 10.5281/zenodo.260230. url: https://doi.org/10.5281/zenodo.260230.
+
+\bibitem{bulk-io}
+B Bockelman, Z Zhang and J Pivarski. Optimizing ROOT IO For Analysis, Journal of Physics: Conference Series, Volume 1085, pages 032012, IOP publishing
+
+\end{thebibliography}
+
+\end{document}
+

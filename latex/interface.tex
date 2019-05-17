@@ -1,0 +1,69 @@
+\section{Implementation}
+\label{sec:implementation}
+
+We implement an Bulk IO API in three common use cases: \textit{TBranch}, \textit{TTreeReader} and \textit{RDataFrame}. We discuss about our interface design and integration in this section.
+
+\subsection{Bulk IO in TBranch}
+
+Listing \ref{bulkapi} shows Bulk IO API in TBranch in which two input arguments need to parse into the function: \textit{entry} and \textit{user\_buf}. the entry defines an event index number indicating which event the function is going to read. The \textit{user\_buf} parses an user-space TBuffer structure as a reference into the function. In the end of the function call, the \textit{user\_buf} should contain the whole basket of data that contains the inquiry event.
+
+\lstset{language=C++,
+                %basicstyle=\ttfamily,
+                keywordstyle=\color{blue}\ttfamily,
+                stringstyle=\color{red}\ttfamily,
+                commentstyle=\color{green}\ttfamily,
+                morecomment=[l][\color{magenta}]{\#},
+                xleftmargin=0.05\textwidth,
+                xrightmargin=0.05\textwidth,
+                basicstyle=\footnotesize\ttfamily,
+                frame=single
+}
+
+\vspace{5pt}
+\begin{lstlisting}[caption={Bulk API in TBranch},captionpos=b,label={bulkapi}]
+Int_t TBranch::GetBulkEntries(Long64_t entry, TBuffer &user_buf)
+\end{lstlisting}
+
+It is worthwhile to mention that \textit{GetBulkEntries} deserializes events on-the-fly when the data read into the \textit{user\_buf}. Thus no further manipulation is required for user applications. An user can later on access an event in the basket using the code snippet shown in Listing \ref{loop} where \textit{T} is the object type and \textit{idx} is the event index in the \textit{user\_buf}.
+\vspace{5pt}
+\lstset{basicstyle=\ttfamily,xleftmargin=0.1\textwidth,xrightmargin=0.05\textwidth}
+\begin{lstlisting}[caption={Loop over user\_buf.},captionpos=b,label={loop}]
+*reinterpret_cast<T*>(user_buf.GetCurrent())[idx]
+\end{lstlisting}
+
+\subsection{Bulk IO in TTreeReader}
+
+\textit{TTreeReader} is an interface for an user to access simple object (primitives, arrays, etc.) in a ROOT file. \textit{TTreeReaderValue} is the interface to access primitives and \textit{TTreeReaderArray} is the interface to access arrays (each event is either an fixed-size or varialbe-size array). Listing \ref{ttreereader} shows a code sample that uses \textit{TTreeReaderValue} to read events (floats) from a file. \textit{TTreeReader} internally relies on \textit{GetEntry} to access events.
+\vspace{5pt}
+\lstset{xleftmargin=0.15\textwidth,xrightmargin=0.04\textwidth
+}
+\begin{lstlisting}[caption={Access to Events using TTreeReader.},captionpos=b,label={ttreereader}]
+TTreeReader myReader("T", hfile);
+TTreeReaderValue<float> myF(myReader, "myFloat");
+Long64_t idx = 0; 
+Float_t sum = 1; 
+while (myReader.Next()) { 
+   sum += *myF;
+}
+\end{lstlisting}
+
+\vspace{5pt}
+
+\lstset{xleftmargin=0\textwidth,xrightmargin=0\textwidth,basicstyle=\footnotesize\ttfamily,breaklines=true}
+\begin{lstlisting}[caption={Bulk API in TTreeReaderFast.},captionpos=b,label={serialized}]
+Int_t TBranch::GetEntriesSerialized(Long64_t entry, TBuffer &user_buf)
+\end{lstlisting}
+
+We design a Bulk API - \textit{GetEntriesSerialized} in TBranch shown in Listing \ref{serialized}. We introduce a new interface - TTreeReaderFast that uses \textit{GetEntriesSerialized} to function as TTreeReader. Unlike \textit{GetBulkEntries}, GetEntriesSerialized does not deserialize events while reading basket into \textit{user\_buf}. Instead, it wait until the user calls \textit{*myF}. Dereference operator invokes the appropriate deserialization code. 
+
+\subsection{Bulk IO in RDataFrame}
+
+During  the work, Bulk IO was integrated into RDataFrame \cite{rdataframe} through RDataSource (RDS) which defines an API for RDF to read arbitrary data formats.
+\vspace{5pt}
+\lstset{basicstyle=\ttfamily,xleftmargin=0.1\textwidth,xrightmargin=0.1\textwidth,breaklines=true}
+\begin{lstlisting}[caption={Bulk API in RDataFrame.},captionpos=b,
+label={serializedcount}]
+Int_t TBranch::GetEntriesSerialized(Long64_t entry, TBuffer &user_buf, TBuffer *count_buf)
+\end{lstlisting}
+
+We define a new Bulk API \textit{GetEntriesSerialized} shown in Listing \ref{serializedcount}. The only difference from Listing \ref{serialized} is that there is one more argument \textit{count\_buf}. Listing \ref{serialized} actually calls Listing \ref{serializedcount} and set the \textit{count\_buf} as nullptr. \textit{count\_buf} is used to store array length information when events in RDataFrame are arrays.

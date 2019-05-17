@@ -1,0 +1,16 @@
+\section{Introduction}
+\label{sec:introduction}
+
+LHC experiment event data models are very complex and slow to read. The problem is that experiments do not care because input I/O time is minimal compared to the reconstruction process. Another critical factor is that experiments care about volume because they have lots of expensive disks.
+
+For analysis case, the situation is different, since the data model is often more straightforward. The same case is about data volume used during the analysis phase, and there will be generated smaller a data volume and often used from SSD (NVMe). It causes minimal CPU costs and allows to iterate over events many times quickly. 
+
+ROOT IO is an incredibly flexible format. It can easily store the complex objects that correspond to the experiment’s data. In the same time, ROOT has high overheads for the serialization of simple objects.
+
+%As an example of performance regression, lets take a TBranch that consists of a single float. As a result of the performance profiling, each object read by ROOT results in:
+%\begin{enumerate}
+%    \item Multiple virtual calls for $TBranch::GetEntry()$, $TBasket::PrepareBasket()$, $TLeaf::ReadBasket()$ and $TBuffer::ReadFloat()$.
+%    \item Multiple function pointer calls, such as $TBranch::fReadLeaves$.
+%    \item Introduced CPU overhead for the bounds and error condition checking. For every float, it reads from the same basket and check for the different possible basket layout formats.
+%    \item Additionally there is significant work overhead on checking TTree basket boundaries.
+%\end{enumerate}
