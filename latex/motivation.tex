@@ -4,21 +4,18 @@
 
 The typical mechanism for iterating through data in a \texttt{TTree} is a handwritten for-loop. ROOT uses a API shown in Listing \ref{getentry} to read objects from a branch (TTree is a structure that contains one or multiple TBranches). This function runs in two steps. First, it searches the underlying storage medium for the basket where the event is located and then read the basket into a memory buffer. The TBasket is the data structure that represents the in-memory buffer. ROOT decompresses the buffer and put the uncompressed buffer in so-called ``kernel" space. In the second step, once the basket appears in memory,  GetEntry deserializes the requested event from the kernel-space buffer and copy it to user-space buffer.
 
-\vspace{5pt}
-\lstset{language=C++,
-                basicstyle=\ttfamily,
-                keywordstyle=\color{blue}\ttfamily,
-                stringstyle=\color{red}\ttfamily,
-                commentstyle=\color{green}\ttfamily,
-                morecomment=[l][\color{magenta}]{\#},
-                xleftmargin=.2\textwidth, xrightmargin=.2\textwidth,
-                frame=single
+\lstset{
+  basicstyle=\ttfamily,
+  frame=single,
+  xleftmargin=.15\textwidth, xrightmargin=.15\textwidth
 }
-\begin{lstlisting}[caption={GetEntry in TBranch.},captionpos=b, label={getentry}]
-TBranch::GetEntry(Long64_t entry)
+\begin{lstlisting}[label={getentry}]
+  Int_t TBranch::GetEntry(Long64_t entry)
 \end{lstlisting}
+\vspace{-10pt}
+\captionof{lstlisting}{GetEntry in TBranch}
 
-When user application is computationally expensive, the cost of library calls, frequently deserializing objects and copying data between memory buffers are amortized to effectively noting. Accordingly, we introduce a new interface for ROOT to copy all events in an on-disk \texttt{TBasket} directly to a user-provided memory buffer. For the simplest of cases - primitives and C-style arrays of primitives - where the serialization can be done without a separate buffer or ``fixing up" pointer contents, the user can request the serialized data be delivered to the buffer or deserialized data.  By requesting the serialized data directly and deserializing directly in the event loop, the user can avoid an expensive scan from main memory.
+When user application is computationally expensive, the cost of library calls, frequently deserializing objects and copying data between memory buffers are amortized to effectively nothing. To overcome such overheads, we introduce a new interface for ROOT to copy all events in an on-disk \texttt{TBasket} directly to a user-provided memory buffer. For the simplest cases - primitives and C-style arrays of primitives, the serialization can be done without a separate buffer or ``fixing up" pointer contents. The user can request the serialized data or deserialized data to be delivered to the user buffer. By requesting the serialized data directly and deserializing directly in the event loop, the user can avoid an expensive scan from main memory.
 
 Pragmatically, the user will not implement code for deserializing data themselves: rather, we have provided a header-only C++ facade around the data, allowing the user to work with a proxy object.  This allows the compiler to inline the deserialization code in the correct place.
 

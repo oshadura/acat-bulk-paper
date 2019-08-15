@@ -3,7 +3,7 @@
 
 \subsection{Experiments}
 
-For tests was used a desktop Intel i5 4-Core @ 3.2GHz, while reading from a TTree with 100 million float values. We test three different use cases: GetBulkEntries, TTreeReaderFast and RDataSource.
+All tests are conducted on a desktop Intel i5 4-Core @ 3.2GHz. A TTree with 100 million float values is read with different APIs. We tested three different use cases: GetBulkEntries, TTreeReaderFast and RDataSource.
 
 \subsection{Results}
 
@@ -11,7 +11,7 @@ Figure \ref{fig:tbranch} shows the time spent on iterating all events in the \te
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[height=4in, width=5in]{getbulkentries.png}
+\includegraphics[height=2.5in, width=3.5in]{getbulkentries.png}
 \vspace*{-2mm}
 \caption{Performance between \textit{GetEntry} and \textit{GetBulkEntries}.}
 \label{fig:tbranch}
@@ -19,18 +19,18 @@ Figure \ref{fig:tbranch} shows the time spent on iterating all events in the \te
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[height=4in, width=5in]{ttreereader.png}
+\includegraphics[height=2.5in, width=3.5in]{ttreereader.png}
 \vspace*{-2mm}
-\caption{Performance comparison between \textit{TTreeReader} and \textit{TTreeReaderFast}.}
+\caption{Performance between \textit{TTreeReader} and \textit{TTreeReaderFast}.}
 \label{fig:ttreereader}
 \end{figure}
 
 \begin{figure}[!ht]
 \centering
-\includegraphics[height=4in, width=5in]{dataframe.png}
+\includegraphics[height=2.5in, width=3.5in]{dataframe.png}
 \vspace*{-2mm}
 \caption{Performance improvements on RDataFrame with Bulk IO.}
 \label{fig:rdataframe}
 \end{figure}
 
-Figure \ref{fig:rdataframe} shows the results of Bulk IO in RDataFrame. In this Figure \ref{fig:rdataframe}, standard RDF is the RDataFrame with normal ROOT IO library functions, while Bulk RDF is the results of reading events by RDataFrame and Bulk IO and Bulk RDS is the results that directly use RDataSource and Bulk IO. Bulk RDS outperforms standard RDF by more than 2 times. Since RDataFrame has extra overheads comparing to RDataSource (RDataFrame internally relies RDataSource), Bulk RDF runs slower than Bulk RDS, but still outperforms standard RDF.
+Figure \ref{fig:rdataframe} shows the results of Bulk IO in RDataFrame. In the figure, the standard RDF shows the performance by using regular RDataFrame function calls. Bulk RDF and Bulk RDS show the result of Bulk APIs. The difference is that, Bulk RDS test detaches RDataSource from RDataFrame stack and run the test directly through RDS function calls. As shown in Figure \ref{fig:rdataframe}, Bulk RDS outperforms standard RDF by more than 2 times. In addition, RDataFrame has extra overheads compared to RDataSource (RDataFrame internally relies RDataSource), therefore Bulk RDF runs slower than Bulk RDS, but still outperforms standard RDF.

@@ -3,30 +3,20 @@
 %Uncomment next line if AMS fonts required
 %\usepackage{iopams}
 \usepackage{listings}
-\usepackage{minted}
-\usepackage{subfig}
 \usepackage{hyperref}
 \usepackage{graphicx}
-% \usepackage{subcaption}
 \usepackage[utf8]{inputenc}
 \usepackage{tikz}
 \usepackage[labelfont=bf]{caption}
-
-%\newminted{cpp}{gobble=2, numbersep=3pt, escapeinside=||, xleftmargin=5mm, framesep=2mm, frame=leftline, baselinestretch=1, fontsize=\scriptsize, linenos=true}
-%\newmintinline{cpp}{}
-
-%\makeatletter
-%\AtBeginEnvironment{minted}{\dontdofcolorbox}
-%\def\dontdofcolorbox{\renewcommand\fcolorbox[4][]{##4}}
-%\makeatother
 
 \begin{document}
 
 \title{Speeding HEP Analysis with ROOT Bulk I/O}
 
-\author{Brian Paul Bockelman  [2], Zhe Zhang [1],  Oksana Shadura [1]}
-\address{[1] University of Nebraska-Lincoln, USA [2] Morgridge Institute for Research, USA}
-\ead{zhan0915@huskers.unl.edu, bbockelman@morgridge.org,  oksana.shadura@cern.ch}
+\author{B Bockelman$^1$, Z Zhang$^2$ and O Shadura$^2$}
+\address{$^1$ Morgridge Institute for Research, Madison, WI 53715, USA}
+\address{$^2$ Holland Computer Center, University Nebraska $-$ Lincoln, Lincoln, NE 68588, USA}
+\ead{bbockelman@morgridge.org}
 \vspace{10pt}
 
 \begin{abstract}
@@ -51,16 +41,16 @@ by the Holland Computing Center of the University of Nebraska.
 
 \begin{thebibliography}{10}
 
+%\bibitem{root}
+%Brun R and Rademakers F, \textit{ROOT - An Object Oriented Data Analysis Framework}, Nucl. Inst. \& Meth. in Phys. Res. A  \textbf{389} (Proceedings AIHENP'96 Workshop,1997).
 \bibitem{root}
-R. Brun, F. Rademakers, \textit{ROOT - An Object Oriented Data Analysis Framework}, Nucl. Inst. \& Meth. in Phys. Res. A  \textbf{389} (Proceedings AIHENP'96 Workshop,1997).
-
+Brun R and Rademakers F ``ROOT - An object oriented data analysis framework", \textit{Nucl. Instr. Meth. Phys. Res.} \textbf{389} (1997) 81-86
 \bibitem{rdataframe}
-Enrico Guiraud, Axel Naumann, and Danilo Piparo. RDataFrame: functional chains for ROOT data analyses. Jan. 2017. doi: 10.5281/zenodo.260230. url: https://doi.org/10.5281/zenodo.260230.
-
+Guiraud E, Naumann A and Piparo D ``RDataFrame: functional chains for ROOT data analyses", (2017) doi: 10.5281/zenodo.260230. url: https://doi.org/10.5281/zenodo.260230.
 \bibitem{bulk-io}
-B Bockelman, Z Zhang and J Pivarski. Optimizing ROOT IO For Analysis, Journal of Physics: Conference Series, Volume 1085, pages 032012, IOP publishing
-
+Bockelman B, Zhang z and Pivarski J ``Optimizing ROOT IO For Analysis", \textit{J. Phys.: Conf. Ser.}, \textbf{1085} (2018) 032012
+\bibitem{pandas}
+Mckinney W ``pandas: a Foundational Python Library for Data Analysis and Statistics", \textit{PyHPC 2011 : Python for High Performance and Scientific Computing}, (2011)
 \end{thebibliography}
-
 \end{document}
 
